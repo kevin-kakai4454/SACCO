@@ -6,4 +6,4 @@
 ## 2 modify
 ## 3 commit 
 ## 4 create pull request
-### alafu ju nimechange itabidi usync na ako ndo tukue on the same page
+
