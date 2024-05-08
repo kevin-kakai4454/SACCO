@@ -6,6 +6,6 @@
 ## 2 modify
 ## 3 commit 
 ## 4 create pull request
-### alafu ju nimechange itabidi usync na ako ndo tukue on the same page
+
 ## To create account you need to be a registered member and use the same  phone/account number 
 ## Transfer Money and deposit is updated but there is a problem when you click the buttons Transfer Money and Deposit it may open either of the two
