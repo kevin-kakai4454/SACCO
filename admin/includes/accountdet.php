@@ -18,7 +18,7 @@
     <h1 style="text-align: center;"></h1>
     <div class="container my-5 border">
         <div class="row">
-            <a class="col-lg-2  btn btn-primary" href="../accounts.php">Back</a>
+            <a class="col-lg-2  btn btn-primary" href="../index.php?source=accounts.php">Back</a>
             <?php
             connection();
             if (isset($_GET['acc_id'])) {
@@ -92,14 +92,17 @@
 
                                         <?php
 
-                                        $query = "SELECT current_ballance FROM main_account WHERE member_id = '$acc_id' AND ID = '2' ";
+                                        $query = "SELECT * FROM main_account WHERE member_id = '$acc_id' ORDER BY id DESC LIMIT 1 ";
                                         $select_query = mysqli_query($connection, $query);
                                         if (!$select_query) {
                                             die("Error in account " . mysqli_error($connection));
                                         }
-                                        while ($row = mysqli_fetch_array($select_query)) {
+                                        while ($row = mysqli_fetch_assoc($select_query)) {
                                             $acc_ballance = $row['current_ballance'];
-                                            //echo $transact_id = $row['ID'];
+                                            $transact_id = $row['ID'];
+
+
+                                            //echo  $transact_id);
                                         ?>
                                             <th>Acc. Ballance</th>
                                             <td colspan='3'><?php echo $acc_ballance ?></td>
@@ -119,6 +122,39 @@
                                             if (isset($_POST['send'])) {
                                                 $amount = $_POST['amount'];
                                                 $reciever_acc = $_POST['acc_no'];
+
+                                                $current_ballance = $acc_ballance - $amount;
+
+                                                $s_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount,sent_date, sent_amount,recieve_date,reciever_acc,recieve_amount, current_ballance)";
+                                                $s_query .= "VALUES ('$acc_id', '$acc_no', '$name', '0', '0', '0','0', now(), '$amount', '0', '0', '0', '$current_ballance' )";
+
+                                                $transfer_query = mysqli_query($connection, $s_query);
+                                                if (!$transfer_query) {
+                                                    die("Error in sender query  " . mysqli_error($connection));
+                                                } else {
+                                                    echo "<p class='success'>You have successfully Trnafered $amount</p>";
+                                                }
+
+
+
+                                                $rec_query = "SELECT * FROM main_account WHERE Acc_No = '$reciever_acc'  ORDER BY ID DESC LIMIT 1  ";
+                                                $recieve_query = mysqli_query($connection, $rec_query);
+                                                while ($row = mysqli_fetch_assoc($recieve_query)) {
+                                                    $reciever_id = $row['member_id'];
+                                                    $reciever_name = $row['acc_Name'];
+                                                    $acc_ballance = $row['current_ballance'];
+                                                    //}
+                                                    $current_ballance = $acc_ballance + $amount;
+                                                    $r_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount,sent_date, sent_amount,recieve_date,reciever_acc,recieve_amount, current_ballance)";
+                                                    $r_query .= "VALUES ('$reciever_id', '$reciever_acc', '$reciever_name', '0', '0', '0','0', '0', '0', now(),'$reciever_acc', '$amount', '$current_ballance' )";
+
+                                                    $reciever_query = mysqli_query($connection, $r_query);
+                                                    if (!$reciever_query) {
+                                                        die("Error in reciever query  " . mysqli_error($connection));
+                                                    } else {
+                                                        echo "<p class='success'>You have successfully Recieved $amount</p>";
+                                                    }
+                                                }
                                             }
 
                                             ?>
@@ -126,8 +162,44 @@
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                                 Transfer Money
                                             </button>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form action="" method="post">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <h1>Transer money</h1>
 
-                                            <a class="btn btn-primary" href="mainacc.php">Transfer</a>
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-floating mb-3 mb-md-0">
+                                                                            <input class="form-control" id="amount" name="amount" type="number" placeholder="Enter Amount" required />
+                                                                            <label for="inputFirstName">Amount</label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-floating">
+                                                                            <input class="form-control" id="acc_no" name="acc_no" type="number" placeholder="Enter Reciever account" required />
+                                                                            <label for="inputLastName">Reciever Acc. No.</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <input class="btn btn-primary" type="submit" name="send" value="Send">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a class="btn btn-primary" href="#">refresh</a>
 
                                             <!--<button type="submit" class="btn btn-primary btn-block" name="update">Transfer</button>-->
 

@@ -6,13 +6,13 @@
 connection();
 if (isset($_POST['create'])) {
     $fee = $_POST['fee'];
-    $account_no = $_POST['account_no'];
+    echo $account_no = $_POST['account_no'];
 
     $shares = "Yes";
     $savings = "Yes";
     $merry_go = "Yes";
 
-    $query = "SELECT * FROM members WHERE phone_number = '$account_no' ";
+    $query = "SELECT * FROM members ";
     $member_query = mysqli_query($connection, $query);
     if (!$member_query) {
         die("ERROR IN MEMBER SELECT" . mysqli_error($connection));
@@ -22,15 +22,19 @@ if (isset($_POST['create'])) {
         $name = $row['Full_name'];
         $phone = $row['phone_number'];
 
-        $query_acc = "INSERT INTO accounts(acc_id, Name, Acc_No, shares, creation_date, savings, merry_go, fee)";
-        $query_acc .= "VALUES( $member_id, '$name', '$phone', '$shares', now(), '$savings', '$merry_go', '$fee')";
+        if ($phone == $account_no) {
 
-        $acc_query = mysqli_query($connection, $query_acc);
-        if (!$acc_query) {
-            die("ERROR IN ACCOUNTS INSERT" . mysqli_error($connection));
-        } else {
-            echo "<p class='success' >Account created successfully</p>";
-        }
+            $query_acc = "INSERT INTO accounts(acc_id, Name, Acc_No, shares, creation_date, savings, merry_go, fee)";
+            $query_acc .= "VALUES( $member_id, '$name', '$phone', '$shares', now(), '$savings', '$merry_go', '$fee')";
+
+            $acc_query = mysqli_query($connection, $query_acc);
+            if (!$acc_query) {
+                die("ERROR IN ACCOUNTS INSERT" . mysqli_error($connection));
+            } else {
+                echo "<p class='success' >Account created successfully</p>";
+            }
+        } else
+            echo "Account no doesent exist";
     }
 }
 
@@ -149,7 +153,7 @@ if (isset($_POST['create'])) {
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input class="form-control" id="account_no" name="account_no" type="number" placeholder="Enter Reciever account" required />
-                                            <label for="inputLastName">Reciever Acc. No.</label>
+                                            <label for="inputLastName">Your Acc. No.</label>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +161,7 @@ if (isset($_POST['create'])) {
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <input class="btn btn-primary" type="submit" name="create" value="Send">
+                                <input class="btn btn-primary" type="submit" name="create" value="create">
                             </div>
                         </form>
                     </div>
@@ -199,7 +203,7 @@ if (isset($_POST['create'])) {
                 $date = $row['creation_date'];
                 $savings = $row['savings'];
                 $merry_go = $row['merry_go'];
-                $target = $row['target'];
+                //$target = $row['target'];
                 $fee = $row['fee'];
                 //}
             ?>
@@ -221,7 +225,7 @@ if (isset($_POST['create'])) {
                     </td>
                 </tr>
             <?php } ?>
-            <tr>
+            <!--<tr>
                 <td>2</td>
                 <td>Jacob Waliaula</td>
                 <td>0703741143</td>
@@ -271,7 +275,7 @@ if (isset($_POST['create'])) {
                         <a class="btn btn-danger" href="#">Delete</a>
                     </span>
                 </td>
-            </tr>
+            </tr>-->
             <!--<tr>
                 <th scope="row">3</th>
                 <td colspan="2">Larry the Bird</td>

@@ -121,7 +121,7 @@
                     break;
             }
         } else {
-            //include("index2.php");
+            include("index2.php");
         }
         ?>
 
