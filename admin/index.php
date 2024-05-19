@@ -34,7 +34,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="index.php?source=savings.php">
                         <i class="fas fa-briefcase"><img style=" height: 25px;" src="bootstrap-icons-1.11.3/basket2-fill.svg" alt=""></i>
                         <span>Savings</span>
                     </a>
@@ -115,6 +115,9 @@
                     break;
                 case 'profile.php':
                     include("profile.php");
+                    break;
+                case 'savings.php':
+                    include("includes/savings.php");
                     break;
                 default:
                     include("index2.php");

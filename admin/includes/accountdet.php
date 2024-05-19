@@ -125,45 +125,64 @@
 
                                                 $current_ballance = $acc_ballance - $amount;
 
-                                                $s_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount,sent_date, sent_amount,recieve_date,reciever_acc,recieve_amount, current_ballance)";
-                                                $s_query .= "VALUES ('$acc_id', '$acc_no', '$name', '0', '0', '0','0', now(), '$amount', '0', '0', '0', '$current_ballance' )";
-
-                                                $transfer_query = mysqli_query($connection, $s_query);
-                                                if (!$transfer_query) {
-                                                    die("Error in sender query  " . mysqli_error($connection));
-                                                } else {
-                                                    echo "<p class='success'>You have successfully Trnafered $amount</p>";
-                                                }
+                                                if ($amount < $acc_ballance && $current_ballance > 10) {
 
 
 
-                                                $rec_query = "SELECT * FROM main_account WHERE Acc_No = '$reciever_acc'  ORDER BY ID DESC LIMIT 1  ";
-                                                $recieve_query = mysqli_query($connection, $rec_query);
-                                                while ($row = mysqli_fetch_assoc($recieve_query)) {
-                                                    $reciever_id = $row['member_id'];
-                                                    $reciever_name = $row['acc_Name'];
-                                                    $acc_ballance = $row['current_ballance'];
-                                                    //}
-                                                    $current_ballance = $acc_ballance + $amount;
-                                                    $r_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount,sent_date, sent_amount,recieve_date,reciever_acc,recieve_amount, current_ballance)";
-                                                    $r_query .= "VALUES ('$reciever_id', '$reciever_acc', '$reciever_name', '0', '0', '0','0', '0', '0', now(),'$reciever_acc', '$amount', '$current_ballance' )";
+                                                    $s_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount,sent_date, sent_amount,recieve_date,reciever_acc,recieve_amount, current_ballance)";
+                                                    $s_query .= "VALUES ('$acc_id', '$acc_no', '$name', '0', '0', '0','0', now(), '$amount', '0', '0', '0', '$current_ballance' )";
 
-                                                    $reciever_query = mysqli_query($connection, $r_query);
-                                                    if (!$reciever_query) {
-                                                        die("Error in reciever query  " . mysqli_error($connection));
+                                                    $transfer_query = mysqli_query($connection, $s_query);
+                                                    if (!$transfer_query) {
+                                                        die("Error in sender query  " . mysqli_error($connection));
                                                     } else {
-                                                        echo "<p class='success'>You have successfully Recieved $amount</p>";
+                                                        echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+                                                    <strong>Confirmed!</strong> You have successfully send $amount to $reciever_acc.
+                                                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                  </div>";
                                                     }
+
+
+
+
+                                                    $rec_query = "SELECT * FROM main_account WHERE Acc_No = '$reciever_acc'  ORDER BY ID DESC LIMIT 1  ";
+                                                    $recieve_query = mysqli_query($connection, $rec_query);
+                                                    while ($row = mysqli_fetch_assoc($recieve_query)) {
+                                                        $reciever_id = $row['member_id'];
+                                                        $reciever_name = $row['acc_Name'];
+                                                        $acc_ballance = $row['current_ballance'];
+                                                        //}
+                                                        $current_ballance = $acc_ballance + $amount;
+
+                                                        $r_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount,sent_date, sent_amount,recieve_date,reciever_acc,recieve_amount, current_ballance)";
+                                                        $r_query .= "VALUES ('$reciever_id', '$reciever_acc', '$reciever_name', '0', '0', '0','0', '0', '0', now(),'$reciever_acc', '$amount', '$current_ballance' )";
+
+                                                        $reciever_query = mysqli_query($connection, $r_query);
+                                                        if (!$reciever_query) {
+                                                            die("Error in reciever query  " . mysqli_error($connection));
+                                                        } else {
+                                                            //echo "<p class='success'>You have successfully Recieved $amount</p>";
+                                                            echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+                                                        <strong>Confirmed!</strong> $reciever_name will recieve $amount  .
+                                                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                      </div>";
+                                                        }
+                                                    }
+                                                } else {
+                                                    echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+                                                    <strong>Filed!</strong> You dont have enough money in your account, account ballance cant be bellow 10.
+                                                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                  </div>";
                                                 }
                                             }
 
                                             ?>
                                             <!-- Button trigger modal -->
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
                                                 Transfer Money
                                             </button>
                                             <!-- Modal -->
-                                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <form action="" method="post">
@@ -199,7 +218,98 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a class="btn btn-primary" href="#">refresh</a>
+
+
+
+
+                                            <!--<button type="submit" class="btn btn-primary btn-block" name="update">Transfer</button>-->
+
+                                            <?php
+                                            if (isset($_POST['withdraw'])) {
+                                                $withdraw_amount = $_POST['amount'];
+                                                $account_no = $_POST['phone'];
+
+                                                if ($account_no ==  $acc_no) {
+
+                                                    $current_ballance = $acc_ballance - $withdraw_amount;
+
+                                                    if ($withdraw_amount < $acc_ballance && $current_ballance > 10) {
+
+
+                                                        //}
+
+                                                        $acc_query = "INSERT INTO main_account(member_id, Acc_No, acc_Name,deposit_date, deposit_amount, withdraw_date, withdraw_amount, current_ballance )";
+                                                        $acc_query .= "VALUES ('$acc_id', '$account_no', '$name', '0', '0', now(),'$withdraw_amount', '$current_ballance' )";
+
+                                                        $mainaccount_query = mysqli_query($connection, $acc_query);
+                                                        if (!$mainaccount_query) {
+                                                            die("Error in withdraw account  " . mysqli_error($connection));
+                                                        } else {
+                                                            //echo "<p class='success'>You have successfully Deposited $deposit_amount</p>";
+                                                            echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+                                                    <strong>Confirmed!</strong> You have Withdrawn $withdraw_amount.
+                                                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                  </div>";
+                                                        }
+                                                    } else {
+                                                        echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+                                                        <strong>Filed!</strong> You dont have enough money in your account, account ballance cant be bellow 10.
+                                                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                      </div>";
+                                                    }
+                                                } else {
+                                                    echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+                                                    <strong>Filed!</strong> The entered does not match with your main Number.
+                                                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                  </div>";
+                                                }
+                                            }
+
+                                            ?>
+                                            <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+                                                Withdraw
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form action="" method="post">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="staticBackdropLabel">Deposit to Account</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <h1>withdraw money to <br>M-pesa</h1>
+
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-floating mb-3 mb-md-0">
+                                                                            <input class="form-control" id="amount" name="amount" type="number" placeholder="Enter Amount" required />
+                                                                            <label for="inputFirstName">Amount</label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-floating">
+                                                                            <input class="form-control" id="acc_no" name="phone" type="number" placeholder="Enter Reciever account" required />
+                                                                            <label for="inputLastName">M-pesa Phone No.</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <input class="btn btn-primary" type="submit" name="withdraw" value="Withdraw">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
 
                                             <!--<button type="submit" class="btn btn-primary btn-block" name="update">Transfer</button>-->
 
@@ -217,7 +327,11 @@
                                                 if (!$mainaccount_query) {
                                                     die("Error in main account  " . mysqli_error($connection));
                                                 } else {
-                                                    echo "<p class='success'>You have successfully Deposited $deposit_amount</p>";
+                                                    //echo "<p class='success'>You have successfully Deposited $deposit_amount</p>";
+                                                    echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+                                                    <strong>Confirmed!</strong> You have deposited $deposit_amount.
+                                                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                                                  </div>";
                                                 }
                                             }
 

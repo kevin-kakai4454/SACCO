@@ -1,6 +1,13 @@
 <?php include("includes/db.php") ?>
 
 <?php
+if (isset($_POST['Edit'])) {
+    echo "HELLO";
+}
+
+?>
+
+<?php
 connection();
 if (isset($_POST['Register'])) {
     $name = $_POST['fullname'];
@@ -16,12 +23,15 @@ if (isset($_POST['Register'])) {
     move_uploaded_file($image_temp, "images/$image");
 
     $query = "INSERT INTO members(Full_name,id_number,phone_number, email, post, reg_date, member_status,photo, address)";
-    $query .= "VALUES('$name', '$id_number', '$phone_number', '$email','$post', now(), '$status', '$image', '$addrss')";
+    $query .= "VALUES('$name', '$id_number', '$phone_number', '$email','$post', now(), '$status', '$image', '$address')";
     $members_query = mysqli_query($connection, $query);
     if (!$members_query) {
         echo "ERROR IN MEMBERS QUERY" . mysqli_error($connection);
     } else {
-        echo "<p class='bg-success' >post updated successfully";
+        echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+        <strong>Confirmed!</strong> You have successfully reistered to ... sacco.
+        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
     }
 }
 
@@ -229,8 +239,11 @@ if (isset($_POST['Register'])) {
                 <td><?php echo $email ?></td>
                 <td>
                     <span>
-                        <a class="btn btn-primary" href="profile.php?memeber_id=<?php echo $member_id ?>">View</a>
-                        <a class="btn btn-primary" href="reg2.php">Edit</a>
+                        <a class="btn btn-primary" href="profile.php?member_id=<?php echo $member_id ?>">View</a>
+                        <a class="btn btn-primary" href="profile_edit.php?member_id=<?php echo $member_id ?>">Edit</a>
+                        <!--<button type=" button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop0">
+                            Edit
+                        </button>-->
                         <a class="btn btn-danger" href="#">Delete</a>
                     </span>
                 </td>
@@ -261,9 +274,93 @@ if (isset($_POST['Register'])) {
     </table>
 
 
-    </div>
-    </div>
-    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop0" data-bs-backdrop="atic" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="" name="signup" enctype="multipart/form-data" onsubmit="return checkpass();">
+                    <div class="modal-body">
+                        <br>
+                        <h3 style="text-align: center;">Register Member</h3>
+                        <!--<form method="post" action="" name="signup" enctype="multipart/form-data" onsubmit="return checkpass();">-->
+                        <?php
+
+                        if (isset($_GET['Edit'])) {
+                            echo $member_id = $_GET['Edit'];
+                        }
+
+                        ?>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3 mb-md-0">
+                                    <input class="form-control" id="fullname" name="fullname" type="text" placeholder="Enter your first name" required />
+                                    <label for="inputFirstName">Full Name</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input class="form-control" id="idnumber" name="idnumber" type="number" placeholder="Enter your last name" required />
+                                    <label for="inputLastName">ID Number</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="email" name="email" value="" type="email" placeholder="phpgurukulteam@gmail.com" required />
+                            <label for="inputEmail">Email address</label>
+                            <?php //email_exists($email) 
+                            ?>
+                        </div>
+
+
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="contact" name="contact" type="text" placeholder="1234567890" required pattern="[0-9]{10}" title="10 numeric characters only" maxlength="10" required />
+                            <label for="inputcontact">Contact Number</label>
+                        </div>
+
+
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3 mb-md-0">
+                                    <input class="form-control" id="address" name="address" type="text" placeholder="Enter Address" required />
+                                    <label for="Address">Address</label>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3 mb-md-0">
+                                    <input class="form-control" id="image" name="image" type="file" placeholder="select image" />
+                                    <label for="selectimage">Select Image</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--<div class="mt-4 mb-0">
+                            <div class="d-grid"><button type="submit" class="btn btn-primary btn-block" name="Register">Register</button></div>
+                        </div>--
+                </form>-->
+                    </div>
+                    <!--<div class="card-footer text-center py-3">
+                    <div class="small"><a href="login.php">Have an account? Go to login</a></div>
+                    <div class="small"><a href="index.php">Back to Home</a></div>
+                </div>-->
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="Edit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="../js/bootstrap.js"></script>
 </body>
