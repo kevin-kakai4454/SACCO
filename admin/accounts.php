@@ -33,8 +33,9 @@ if (isset($_POST['create'])) {
             } else {
                 echo "<p class='success' >Account created successfully</p>";
             }
-        } else
+        } else {
             echo "Account no doesent exist";
+        }
     }
 }
 
@@ -187,7 +188,7 @@ if (isset($_POST['create'])) {
 
             // $query = "SELECT Accounts.acc_id, Accounts.name, Accounts.phone/Acc_No, Accounts.shares, Accounts.sarving_date, Accounts.savings, Accounts.merry_go, Accounts.fee, ";
             // $query .= "members.ID, members.name, members.phone_number";
-            connection();
+            // connection();
             $query = "SELECT * FROM Accounts";
             $accounts_query = mysqli_query($connection, $query);
             if (!$accounts_query) {
@@ -257,23 +258,7 @@ if (isset($_POST['create'])) {
                     </span>
                 </td>
             </tr>
-            <tr>
-                <td>4</td>
-                <td>Jacob Waliaula</td>
-                <td>0703741143</td>
-                <td>KSH. 150</td>
-                <td>12/05/2022</td>
-                <td>KSH. 250</td>
-                <td>KSH. 700</td>
-                <td>KSH. 50</td>
-                <td>
-                    <span>
-                        <a class="btn btn-primary" href="#">View</a>
-                        <a class="btn btn-primary" href="#">Edit</a>
-                        <a class="btn btn-danger" href="#">Delete</a>
-                    </span>
-                </td>
-            </tr>-->
+           
             <!--<tr>
                 <th scope="row">3</th>
                 <td colspan="2">Larry the Bird</td>

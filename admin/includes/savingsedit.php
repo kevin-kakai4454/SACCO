@@ -55,7 +55,7 @@ if (isset($_POST['Update'])) {
         <div class="row">
             <a class="col-lg-2  btn btn-primary" href="../index.php?source=savings.php">Back</a>
             <?php
-            connection();
+            // connection();
             if (isset($_GET['acc_id'])) {
                 $acc_id = $_GET['acc_id'];
 

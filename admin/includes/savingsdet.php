@@ -19,31 +19,88 @@ connection();
 if (isset($_POST['deposit'])) {
     $amount  = $_POST['amount'];
     $acc_no  = $_POST['phone'];
-    $To = $_POST['To'];
+    $from = $_POST['From'];
     $Pin = $_POST['PIN'];
 
-    $bal = "SELECT * FROM savings WHERE Acc_No = '$acc_no' ORDER BY ID DESC LIMIT 1 ";
-    $bal_query = mysqli_query($connection, $bal);
-    while ($row = mysqli_fetch_assoc($bal_query)) {
-        $ID = $row['ID'];
-        $member_id = $row['member_id'];
-        $total_savings = $row['total_savings'];
-        $name = $row['name'];
+    if ($from == 'Main Acc') {
+        $acc = "SELECT * FROM main_account WHERE Acc_No = '$acc_no' ORDER BY ID DESC LIMIT 1 ";
+        $acc_query = mysqli_query($connection, $acc);
+        while ($row = mysqli_fetch_assoc($acc_query)) {
+            $acc_id = $row['Acc_No'];
+            $current_ballance = $row['current_ballance'];
+
+            $ballance = $current_ballance - $amount;
+
+            if ($ballance <= 10) {
+                echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+                <strong>Failed!</strong> You dont have enough money in your Main Account.
+                <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                </div>";
+            } else {
+                $query = "UPDATE main_account SET ";
+                $query .= "current_ballance = '$ballance' ";
+                $query .= "WHERE Acc_No = '$acc_no' ";
+
+                $update_query = mysqli_query($connection, $query);
+                if (!$update_query) {
+                    die("Error in withdraw account  " . mysqli_error($connection));
+                } else {
+                    echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+                    <strong>Confirmed!</strong> $amount has been substracted from main account.
+                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                    </div>";
+                    //header("Location:savingsdet.php");
+                }
+                $bal = "SELECT * FROM savings WHERE Acc_No = '$acc_no' ORDER BY ID DESC LIMIT 1 ";
+                $bal_query = mysqli_query($connection, $bal);
+                while ($row = mysqli_fetch_assoc($bal_query)) {
+                    $ID = $row['ID'];
+                    $member_id = $row['member_id'];
+                    $total_savings = $row['total_savings'];
+                    $name = $row['name'];
 
 
-        $acc_ballance = $total_savings + $amount;
+                    $acc_ballance = $total_savings + $amount;
 
-        $query = "INSERT INTO savings(member_id, name, Acc_No, deposit_date, saving_amount, withdraw_date,amount,fixed_saving_amt,saving_plan,saving_duration,target,total_savings,withdraw_amount )";
-        $query .= "VALUES('$member_id', '$name',$acc_no, 'now()', '0', '0', '$amount','0','0','0','0','$acc_ballance' ,'0')";
+                    $query = "INSERT INTO savings(member_id, name, Acc_No, deposit_date, saving_amount, withdraw_date,amount,fixed_saving_amt,saving_plan,saving_duration,target,total_savings,withdraw_amount )";
+                    $query .= "VALUES('$member_id', '$name',$acc_no, 'now()', '0', '0', '$amount','0','0','0','0','$acc_ballance' ,'0')";
 
-        $savings_query = mysqli_query($connection, $query);
-        if (!$savings_query) {
-            die("Erro on saving money" . mysqli_error($connection));
-        } else {
-            echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
-            <strong>Confirmed!</strong> You have successfully deposited $amount to the savings account.
+                    $savings_query = mysqli_query($connection, $query);
+                    if (!$savings_query) {
+                        die("Erro on saving money" . mysqli_error($connection));
+                    } else {
+                        echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+                        <strong>Confirmed!</strong> You have successfully deposited $amount to the savings account From your main account.
+                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                        </div>";
+                        header("Location:savingsdet.php?acc_id=$acc_id");
+                    }
+                }
+            }
+        }
+    } else {
+        $bal = "SELECT * FROM savings WHERE Acc_No = '$acc_no' ORDER BY ID DESC LIMIT 1 ";
+        $bal_query = mysqli_query($connection, $bal);
+        while ($row = mysqli_fetch_assoc($bal_query)) {
+            $ID = $row['ID'];
+            $member_id = $row['member_id'];
+            $total_savings = $row['total_savings'];
+            $name = $row['name'];
+
+            $acc_ballance = $total_savings + $amount;
+
+            $query = "INSERT INTO savings(member_id, name, Acc_No, deposit_date, saving_amount, withdraw_date,amount,fixed_saving_amt,saving_plan,saving_duration,target,total_savings,withdraw_amount )";
+            $query .= "VALUES('$member_id', '$name',$acc_no, 'now()', '0', '0', '$amount','0','0','0','0','$acc_ballance' ,'0')";
+
+            $savings_query = mysqli_query($connection, $query);
+            if (!$savings_query) {
+                die("Erro on saving money" . mysqli_error($connection));
+            } else {
+                echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+            <strong>Confirmed!</strong> You have successfully deposited $amount to the savings account From mpesa.
             <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
             </div>";
+            }
         }
     }
 }
@@ -135,7 +192,7 @@ if (isset($_POST['deposit'])) {
                                     die("Error in account " . mysqli_error($connection));
                                 }
                                 while ($row = mysqli_fetch_assoc($select_query)) {
-                                    $acc_ballance = $row['Amount'];
+                                    $acc_ballance = $row['total_savings'];
                                     $transact_id = $row['ID'];
 
 
@@ -211,7 +268,7 @@ if (isset($_POST['deposit'])) {
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
-                                <select class="form-control" name="To" id="">
+                                <select class="form-control" name="From" id="">
                                     <option value="Mpesa">Mpesa</option>
                                     <option value="Main Acc">Main Acc.</option>
                                 </select>

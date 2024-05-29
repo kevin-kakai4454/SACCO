@@ -74,7 +74,7 @@ if (isset($_GET['member_id'])) {
 
                     <tr>
                         <th>Registration Date</th>
-                        <td>reg_date</td>
+                        <td><?php echo $reg_date ?></td>
                     </tr>
                     <tr>
                         <th>Address</th>

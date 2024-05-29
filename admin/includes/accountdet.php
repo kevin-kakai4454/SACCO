@@ -91,7 +91,7 @@
                                     <tr>
 
                                         <?php
-
+                                        // header("Location:savingsdet.php?acc_id = $acc_id");
                                         $query = "SELECT * FROM main_account WHERE member_id = '$acc_id' ORDER BY id DESC LIMIT 1 ";
                                         $select_query = mysqli_query($connection, $query);
                                         if (!$select_query) {
@@ -136,7 +136,7 @@
                                                     if (!$transfer_query) {
                                                         die("Error in sender query  " . mysqli_error($connection));
                                                     } else {
-                                                        echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+                                                        echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
                                                     <strong>Confirmed!</strong> You have successfully send $amount to $reciever_acc.
                                                     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
                                                   </div>";
@@ -168,6 +168,7 @@
                                                       </div>";
                                                         }
                                                     }
+                                                    echo "<meta http-equiv='refresh' content='0'>";
                                                 } else {
                                                     echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
                                                     <strong>Filed!</strong> You dont have enough money in your account, account ballance cant be bellow 10.
@@ -175,6 +176,7 @@
                                                   </div>";
                                                 }
                                             }
+
 
                                             ?>
                                             <!-- Button trigger modal -->
@@ -245,7 +247,7 @@
                                                         if (!$mainaccount_query) {
                                                             die("Error in withdraw account  " . mysqli_error($connection));
                                                         } else {
-                                                            //echo "<p class='success'>You have successfully Deposited $deposit_amount</p>";
+                                                            echo "<meta http-equiv='refresh' content='0'>";
                                                             echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
                                                     <strong>Confirmed!</strong> You have Withdrawn $withdraw_amount.
                                                     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
@@ -327,13 +329,14 @@
                                                 if (!$mainaccount_query) {
                                                     die("Error in main account  " . mysqli_error($connection));
                                                 } else {
-                                                    //echo "<p class='success'>You have successfully Deposited $deposit_amount</p>";
+                                                    echo "<meta http-equiv='refresh' content='0'>";
                                                     echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
                                                     <strong>Confirmed!</strong> You have deposited $deposit_amount.
                                                     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
                                                   </div>";
                                                 }
                                             }
+                                            //header("Location:savingsdet.php");
 
                                             ?>
                                             <!-- Button trigger modal -->

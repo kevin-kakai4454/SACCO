@@ -31,7 +31,7 @@ if (isset($_POST['Dailysave'])) {
         if (!$savings_query) {
             die("Erro on savings" . mysqli_error($connection));
         } else {
-            echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+            echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
             <strong>Confirmed!</strong> You have joined the daily saving plan .
             <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
             </div>";
@@ -492,15 +492,15 @@ if (isset($_POST['Targetsave'])) {
                     </form>
                 </div>
                 <div class="col-lg-2 col-md-2">
-                    <form class="d-flex">
+                    <form method="post" class="d-flex">
                         <!--<input class="form-control me-2" type="dropdown" placeholder="Search by phone" aria-label="Search">-->
-                        <select class="form-control" value="<?php echo $maths ?>" name="maths" id="">
-                            <option value="1">Select plan</option>
-                            <option value="Daily">Daily</option>
-                            <option value="Weekly">Weekly</option>
-                            <option value="Monthly">Monthly</option>
+                        <select class="form-control" value="" name="viewplan" id="">
+                            <option value="all">Select plan</option>
+                            <option value="plans">Saving Plan</option>
+                            <option value="savings">Savings</option>
+                            <!--<option value="Monthly">Monthly</option>-->
                         </select>
-                        <button class="btn btn-outline-success" type="submit">Viewplan</button>
+                        <button class="btn btn-outline-success" name="view" type="submit">View </button>
                     </form>
                 </div>
             </div>
@@ -520,15 +520,26 @@ if (isset($_POST['Targetsave'])) {
                 </thead>
                 <tbody>
                     <?php
+                    if (isset($_POST['view'])) {
+                        $savings = $_POST['savings'] = 0;
+                        //$savings_plan = $_POST['1'];
+                        //if ($savings_view == 0) {
+                        $query = "SELECT * FROM savings WHERE Saving_plan = '$savings' ";
 
-                    $query = "SELECT * FROM savings ";
+                        //}
+                    } else {
+                        // $plan = $_POST['plans'] = 1;
+                        // $query = "SELECT * FROM savings WHERE saving_duration != '$savings' ";
+                        $query = "SELECT * FROM savings WHERE saving_duration != 0 ";
+                    }
+                    // $query = "SELECT * FROM savings WHERE saving_duration != 0 ";
                     $save_query = mysqli_query($connection, $query);
                     while ($row = mysqli_fetch_assoc($save_query)) {
                         $acc_id = $row['ID'];
                         $member_id = $row['member_id'];
                         $name = $row['name'];
                         $acc_no = $row['Acc_No'];
-                        $savings = $row['total_savings'];
+                        $savings = $row['Amount'];
                         $saving_amount = $row['fixed_saving_amt'];
                         $saving_plan = $row['Saving_plan'];
                         $saving_duration = $row['saving_duration'];
@@ -540,7 +551,7 @@ if (isset($_POST['Targetsave'])) {
                             <td><?php echo $acc_id ?></td>
                             <td><?php echo $name ?></td>
                             <td><?php echo $acc_no ?></td>
-                            <td>KSH.<?php echo $acc_id ?></td>
+                            <td>KSH.<?php echo $savings ?></td>
                             <td><?php echo $saving_amount ?></td>
                             <td><?php echo $saving_plan ?></td>
                             <td><?php echo $saving_duration . " " ?>Weeks</td>
